@@ -28,6 +28,8 @@ from sensor_msgs.msg import LaserScan
 
 import rospy
 
+import numpy as np
+
 class LaserPreview:
 	def __init__(self):
 
@@ -64,7 +66,14 @@ class LaserPreview:
 	# Print info
 	def cbLaserInfo(self):
 		if self.laser_received:
-			rospy.loginfo(self.scanValue[0])
+			if np.isnan(self.scanValue[0]):
+				pass
+			else:
+				if self.scanValue[0] > 0.6:
+#					rospy.loginfo("[Angle: 0]: %.4f" % (self.scanValue[0]))
+					pass
+				else:
+					rospy.logwarn("[Robot1] OBSTACLE! [Angle: 0]: %.4f" % (self.scanValue[0]))
 		else:
 			rospy.logerr("No Laser Reading")
 
