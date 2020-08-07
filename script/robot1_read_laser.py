@@ -66,14 +66,16 @@ class LaserPreview:
 	# Print info
 	def cbLaserInfo(self):
 		if self.laser_received:
-			if np.isnan(self.scanValue[0]):
+#			rospy.loginfo([self.scanValue[0], self.scanValue[512]])
+			center = len(self.scanValue) // 2
+			if np.isnan(self.scanValue[center]):
 				pass
 			else:
-				if self.scanValue[0] > 0.6:
+				if self.scanValue[center] > 0.6:
 #					rospy.loginfo("[Angle: 0]: %.4f" % (self.scanValue[0]))
 					pass
 				else:
-					rospy.logwarn("[Robot1] OBSTACLE! [Angle: 0]: %.4f" % (self.scanValue[0]))
+					rospy.logwarn("[Robot1] OBSTACLE! [Angle: 0]: %.4f" % (self.scanValue[center]))
 		else:
 			rospy.logerr("No Laser Reading")
 
