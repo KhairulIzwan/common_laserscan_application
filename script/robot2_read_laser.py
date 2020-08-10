@@ -92,20 +92,20 @@ class LaserPreview:
 				
 			if right > 0.6 and right > left:
 				self.pubMoveR()
-				rospy.logwarn("Right")
+#				rospy.logwarn("Right")
 			elif left > 0.6 and right < left:
 				self.pubMoveL()
-				rospy.logwarn("Left")
+#				rospy.logwarn("Left")
 			elif right < 0.6 and left < 0.6 and center > 0.6:
 				self.pubMove()
-				rospy.logwarn("Center")
+#				rospy.logwarn("Center")
 			elif right < 0.6 and left < 0.6 and center < 0.6:
 				self.pubStop()
-				rospy.logwarn("Stop")
+#				rospy.logwarn("Stop")
 		else:
 			rospy.logerr("No Laser Reading")
 			self.pubStop()
-			rospy.logwarn("Stop")
+#			rospy.logwarn("Stop")
 			
 		# Allow up to one second to connection
 		rospy.sleep(0.1)
