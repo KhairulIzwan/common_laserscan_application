@@ -24,7 +24,7 @@
 
 #import math
 from sensor_msgs.msg import LaserScan
-#from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Twist
 
 import rospy
 
@@ -36,6 +36,8 @@ class LaserPreview:
 #		self.bridge = CvBridge()
 #		self.image_received = False
 		self.laser_received = False
+		
+		self.move = Twist()
 
 		rospy.logwarn("[Robot1] LaserRead Node [ONLINE]...")
 
@@ -45,6 +47,10 @@ class LaserPreview:
 		# Subscribe to LaserScan msg
 		self.laser_topic = "/scan_robot1"
 		self.laser_sub = rospy.Subscriber(self.laser_topic, LaserScan, self.cbLaser)
+		
+		# Publish to Twist msg
+		twist_topic = "/cmd_vel_robot1"
+		self.twist_pub = rospy.Publisher(twist_topic, Twist, queue_size=10)
 
 		# Allow up to one second to connection
 		rospy.sleep(1)
@@ -73,16 +79,59 @@ class LaserPreview:
 			else:
 				if self.scanValue[center] > 0.6:
 #					rospy.loginfo("[Angle: 0]: %.4f" % (self.scanValue[0]))
-					pass
+#					pass
+
+					self.move.linear.x = 0.10
+					self.move.linear.y = 0.00
+					self.move.linear.z = 0.00
+					
+					self.move.angular.x = 0.00
+					self.move.angular.y = 0.00
+					self.move.angular.z = 0.00
+					
+					self.twist_pub.publish(self.move)
 				else:
 					rospy.logwarn("[Robot1] OBSTACLE! [Angle: 0]: %.4f" % (self.scanValue[center]))
+					
+					self.move.linear.x = 0.00
+					self.move.linear.y = 0.00
+					self.move.linear.z = 0.00
+					
+					self.move.angular.x = 0.00
+					self.move.angular.y = 0.00
+					self.move.angular.z = 0.00
+					
+					self.twist_pub.publish(self.move)
 		else:
 			rospy.logerr("No Laser Reading")
+			
+			self.move.linear.x = 0.00
+			self.move.linear.y = 0.00
+			self.move.linear.z = 0.00
+			
+			self.move.angular.x = 0.00
+			self.move.angular.y = 0.00
+			self.move.angular.z = 0.00
+			
+			self.twist_pub.publish(self.move)
+			
+		# Allow up to one second to connection
+		rospy.sleep(0.1)
 
 	# rospy shutdown callback
 	def cbShutdown(self):
 
 		rospy.logerr("[Robot1] LaserRead Node [OFFLINE]...")
+		
+		self.move.linear.x = 0.00
+		self.move.linear.y = 0.00
+		self.move.linear.z = 0.00
+		
+		self.move.angular.x = 0.00
+		self.move.angular.y = 0.00
+		self.move.angular.z = 0.00
+		
+		self.twist_pub.publish(self.move)
 
 if __name__ == '__main__':
 
